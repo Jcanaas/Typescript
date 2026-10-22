@@ -1,18 +1,16 @@
 type bicicleta = {
     fabricant: string;
-    model:string;
-
-
+    model: string;
 }
 
 type patinet = {
     fabricant: string;
-    model:string;
+    model: string;
     TempsCarrega: number;
 }
 
 type vehicle = patinet | bicicleta;
-
+let veichles: vehicle[] = [];
 const inputFabricant = document.getElementById('fabricant') as HTMLInputElement;
 const inputModel = document.getElementById('model') as HTMLInputElement;
 const inputTemps = document.getElementById('TempsCarrega') as HTMLInputElement;
@@ -22,35 +20,61 @@ const guardarboton = document.getElementById('guardar') as HTMLButtonElement;
 const mostrarboton = document.getElementById('mostrar') as HTMLButtonElement;
 
 const res = document.getElementById('res') as HTMLParagraphElement;
+const tempsCarregaLabel = document.getElementById('tempsCarregaLabel') as HTMLLabelElement;
 
+function actualizarCampoTemps(): void {
+    tempsCarregaLabel.style.display = selectTipus.value === 'p' ? '' : 'none';
+}
+selectTipus.addEventListener('change', actualizarCampoTemps);
+actualizarCampoTemps();
 
-let veichles: vehicle[] = [];
 guardarboton.addEventListener('click', () => {
-    if(selectTipus.value === 'b') {
+    const fabricant = inputFabricant.value.trim();
+    const model = inputModel.value.trim();
+
+
+
+    if (selectTipus.value == 'b') {
         let NouVehicle: bicicleta = {
-            fabricant: inputFabricant.value.toString(),
-            model: inputModel.value,
-
+            fabricant,
+            model,
         }
         veichles.push(NouVehicle);
-    }else if(selectTipus.value === 'p'){
+    } else if (selectTipus.value == 'p') {
+        const temps = inputTemps.valueAsNumber;
+        if (isNaN(temps) || temps < 0) {
+            res.innerText = "Error, el tiempo no puede ser negativo o 0";
+            return;
+        }
         let NouVehicle: patinet = {
-            fabricant: inputFabricant.value.toString(),
-            model: inputModel.value,
-            TempsCarrega: inputTemps.valueAsNumber
-
+            fabricant,
+            model,
+            TempsCarrega: temps,
         }
         veichles.push(NouVehicle);
-    }else {
-        console.log("Error");
+    } else {
+
+        return;
+    }
+
+    inputFabricant.value = '';
+    inputModel.value = '';
+    inputTemps.value = '';
+})
+
+mostrarboton.addEventListener('click', () => {
+    if (veichles.length === 0) {
+        res.innerText = "No hi ha vehicles desats.";
         return;
     }
 
 
-})
-
-mostrarboton.addEventListener('click', () => {
- veichles.forEach(veich => {
-     res.innerText= "Model: "+ veich.model + "\n Fabricant: " + veich.fabricant;
- })
+    let texto = "";
+    veichles.forEach(veich => {
+        texto += "Model: " + veich.model + "\nFabricant: " + veich.fabricant;
+        if ('TempsCarrega' in veich) {
+            texto += "\nTemps de carrega: " + veich.TempsCarrega + " h";}
+        texto += "\n\n";
+    });
+    res.innerText = texto;
 })
