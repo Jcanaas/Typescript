@@ -44,7 +44,7 @@ guardarboton.addEventListener('click', () => {
 });
 mostrarboton.addEventListener('click', () => {
     if (veichles.length === 0) {
-        res.innerText = "No hi ha vehicles desats.";
+        res.innerText = "No vehicles";
         return;
     }
     let texto = "";
